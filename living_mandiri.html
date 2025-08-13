@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Mandiri - Versi Adaptif</title>
+    <!-- Memuat Tailwind CSS dari CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Lucide Icons dari CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Memuat pustaka PDF.js untuk merender PDF dari CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js"></script>
+    <style>
+        /* CSS yang disederhanakan untuk responsivitas yang lebih baik.
+         * Semua ukuran diatur menggunakan unit relatif seperti rem atau kelas Tailwind.
+         */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/seputarntb/2022/09/LELANGmq.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow-y: auto;
+        }
+        /* Mengurangi opasitas overlay untuk membuat gambar latar lebih jernih */
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            /* Opasitas dikurangi menjadi 0.45 */
+            z-index: -1;
+        }
+        
+        .app-container-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            /* Dibuat sedikit transparan agar gambar latar masih terlihat */
+            border-radius: 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 90vw;
+        }
+        
+        @media (min-width: 1024px) {
+            .app-container-card {
+                padding: 4rem;
+                max-width: 1440px;
+            }
+        }
+        
+        .lucide {
+            display: inline-block;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+            line-height: 1;
+        }
+        
+        .file-list-item,
+        .service-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: #f3f4f6;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .file-list-item:hover,
+        .service-list-item:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .file-list-item-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            margin-right: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .file-list-item-icon {
+                width: 3.5rem;
+                height: 3.5rem;
+                margin-right: 2rem;
+            }
+        }
+        
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3b82f6;
+            border-radius: 50%;
+            width: 6rem;
+            height: 6rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        /* Mengubah gaya PDF viewer agar tidak lagi menjadi overlay tetap */
+        
+        #pdf-viewer-container {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            max-height: none;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            /* agar tidak ada background ganda */
+        }
+        
+        .pdf-viewer-canvas {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .menu-item-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+            min-width: 10rem;
+            min-height: 10rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .menu-item-container {
+                padding: 3rem;
+                min-width: 18rem;
+                min-height: 18rem;
+            }
+        }
+        
+        .menu-item-container:hover {
+            transform: scale(1.05);
+        }
+        
+        .menu-item-container .lucide {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+            stroke-width: 1.5;
+        }
+        
+        @media (min-width: 1024px) {
+            .menu-item-container .lucide {
+                width: 7rem;
+                height: 7rem;
+                margin-bottom: 2rem;
+            }
+        }
+        
+        .large-image-content {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .service-list-item h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        @media (min-width: 1024px) {
+            .service-list-item h3 {
+                font-size: 2.5rem;
+            }
+        }
+        /* New styles for service items as boxes */
+        
+        .service-box-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background-color: #f3f4f6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            min-height: 10rem;
+        }
+        
+        .service-box-item:hover {
+            transform: translateY(-5px);
+            background-color: #e5e7eb;
+        }
+        
+        .service-box-item h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-box-item .lucide {
+            width: 2.5rem;
+            height: 2.5rem;
+            margin-bottom: 1rem;
+            stroke-width: 1.5;
+            color: #3b82f6;
+        }
+        
+        @media (min-width: 1024px) {
+            .service-box-item {
+                padding: 2rem;
+                min-height: 12rem;
+            }
+            .service-box-item h3 {
+                font-size: 1.75rem;
+            }
+            .service-box-item .lucide {
+                width: 3.5rem;
+                height: 3.5rem;
+            }
+        }
+        /* Gaya kursor pointer untuk judul yang bisa diklik */
+        
+        .clickable-title {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="p-4 lg:p-10 text-center">
+        <h1 class="text-4xl sm:text-5xl lg:text-8xl font-extrabold text-white tracking-tighter mb-4 lg:mb-6">
+            LIVING - mandiri
+        </h1>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 lg:mb-4">Layanan Informasi Investasi Perizinan Digital</h2>
+        <p class="text-lg sm:text-xl text-gray-200 mb-6 lg:mb-10">Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Kabupaten Lombok Barat</p>
+
+        <!-- Login Button -->
+        <div id="login-icon" class="flex flex-col items-center justify-center p-8 lg:p-12 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl shadow-lg transition-colors duration-300 cursor-pointer h-48 w-48 lg:h-64 lg:w-64 mx-auto">
+            <i data-lucide="log-in" class="w-16 h-16 lg:w-32 lg:h-32 mb-2 lg:mb-6"></i>
+            <span class="text-xl lg:text-3xl font-semibold">Masuk</span>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="main-app-container" class="p-4 lg:p-10 text-center hidden">
+        <div class="text-center mb-8 lg:mb-12">
+            <!-- Main Title (clickable to go back to login) -->
+            <h1 id="main-title" class="text-4xl sm:text-5xl lg:text-8xl font-extrabold text-white tracking-tighter mb-4 lg:mb-6 clickable-title">
+                LIVING - mandiri
+            </h1>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 lg:mb-4">Layanan Informasi Investasi Perizinan Digital</h2>
+            <p class="text-lg sm:text-xl text-gray-200">Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Kabupaten Lombok Barat</p>
+        </div>
+
+        <!-- Main Menu Grid -->
+        <div id="main-menu" class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-8">
+            <div id="profil-icon" class="menu-item-container">
+                <a href="#" class="w-full h-full flex flex-col items-center justify-center text-center">
+                    <img src="images/z.png" alt="Profil DPMPTSP Kabupaten Lombok Barat" class="w-full h-auto object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x400/cccccc/000000?text=Gagal+Memuat'">
+                </a>
+            </div>
+            <div id="penanaman-modal-icon" class="menu-item-container">
+                <a href="#" class="w-full h-full flex flex-col items-center justify-center text-center">
+                    <img src="images/Penanaman Modal.png" alt="Penanaman modal" class="w-full h-auto object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x400/cccccc/000000?text=Gagal+Memuat'">
+                </a>
+            </div>
+            <div id="perizinan-icon" class="menu-item-container">
+                <a href="#" class="w-full h-full flex flex-col items-center justify-center text-center">
+                    <img src="images/c.png" alt="Perizinan" class="w-full h-auto object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x400/cccccc/000000?text=Gagal+Memuat'">
+                </a>
+            </div>
+            <div id="mal-pelayanan-publik-icon" class="menu-item-container">
+                <a href="#" class="w-full h-full flex flex-col items-center justify-center text-center">
+                    <img src="images/ruang.png" alt="Informasi tata ruang" class="w-full h-auto object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x400/cccccc/000000?text=Gagal+Memuat'">
+                </a>
+            </div>
+        </div>
+
+        <!-- Profil Submenu -->
+        <div id="profil-submenu" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-main-menu-from-profil" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Profil</h2>
+                <button id="home-button-from-profil" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-8">
+                <div id="tentang-icon" class="menu-item-container bg-blue-500 text-white hover:bg-blue-600">
+                    <i data-lucide="info"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Tentang</span>
+                </div>
+                <div id="profil-dpmptsp-icon" class="menu-item-container bg-indigo-500 text-white hover:bg-indigo-600">
+                    <i data-lucide="building"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Profil DPMPTSP</span>
+                </div>
+                <div id="visi-misi-icon" class="menu-item-container bg-teal-500 text-white hover:bg-teal-600">
+                    <i data-lucide="target"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Visi dan Misi</span>
+                </div>
+                <div id="tugas-fungsi-icon" class="menu-item-container bg-red-500 text-white hover:bg-red-600">
+                    <i data-lucide="clipboard"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Tugas dan Fungsi</span>
+                </div>
+                <div id="struktur-organisasi-icon" class="menu-item-container bg-cyan-500 text-white hover:bg-cyan-600">
+                    <i data-lucide="git-fork"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Struktur Organisasi</span>
+                </div>
+                <div id="profil-pejabat-icon" class="menu-item-container bg-pink-500 text-white hover:bg-pink-600">
+                    <i data-lucide="users"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Profil Pejabat Struktural</span>
+                </div>
+                <div id="stand-pelayanan-icon" class="menu-item-container bg-pink-500 text-white hover:bg-pink-600">
+                    <i data-lucide="building"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">Stand Pelayanan</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profil Content Screens -->
+        <div id="tentang-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-tentang" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Tentang DPMPTSP</h2>
+                <button id="home-button-from-tentang" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/tentang.png" alt="Gedung DPMPTSP Lombok Barat" class="large-image-content">
+            </div>
+        </div>
+
+        <div id="profil-dpmptsp-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-dpmptsp" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Profil DPMPTSP</h2>
+                <button id="home-button-from-dpmptsp" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/dpmptsp (2).png" alt="Gambar Profil DPMPTSP" class="large-image-content">
+            </div>
+        </div>
+
+        <div id="visi-misi-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-visi-misi" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Visi dan Misi</h2>
+                <button id="home-button-from-visi-misi" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/visi misi.jpeg" alt="Gambar Visi dan Misi" class="large-image-content">
+            </div>
+        </div>
+
+        <div id="tugas-fungsi-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-tugas-fungsi" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Tugas dan Fungsi</h2>
+                <button id="home-button-from-tugas-fungsi" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/tugas.jpeg" alt="Gambar Tugas dan Fungsi" class="large-image-content">
+            </div>
+        </div>
+
+        <div id="struktur-organisasi-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-struktur-organisasi" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Struktur Organisasi</h2>
+                <button id="home-button-from-struktur-organisasi" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/struktur.png" alt="Gambar Tugas dan Fungsi" class="large-image-content">
+            </div>
+        </div>
+
+        <div id="profil-pejabat-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-profil-submenu-from-pejabat" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Profil Pejabat Struktural</h2>
+                <button id="home-button-from-pejabat" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="flex justify-center">
+                <img src="images/pejabat.png" alt="Gambar Profil Pejabat Struktural" class="large-image-content">
+            </div>
+        </div>
+
+        <!-- Penanaman Modal Submenu -->
+        <div id="penanaman-modal-submenu" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-main-menu-from-penanaman" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Penanaman Modal</h2>
+                <button id="home-button-from-penanaman" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-8">
+                <div id="ipro-icon" class="menu-item-container bg-blue-500 text-white hover:bg-blue-600">
+                    <i data-lucide="briefcase"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">IPRO (Investmen Project Ready to Offer)</span>
+                </div>
+                <div id="rdtr-icon" class="menu-item-container bg-indigo-500 text-white hover:bg-indigo-600">
+                    <i data-lucide="map"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">RDTR (Rencana Detail Tata Ruang)</span>
+                </div>
+                <div id="lkpm-icon" class="menu-item-container bg-teal-500 text-white hover:bg-teal-600">
+                    <i data-lucide="bar-chart-2"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">LKPM (Laporan Kegiatan Penanaman Moda)</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Penanaman Modal Content Screens -->
+        <div id="ipro-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-penanaman-submenu-from-ipro" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">IPRO (Investmen Project Ready to Offer)</h2>
+                <button id="home-button-from-ipro" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen nvestmen Project Ready to Offer</h3>
+            <div class="space-y-4" id="ipro-file-list">
+                <a href="#" class="file-list-item" data-url="images/IPRO.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">PROSPEKTUS SUMMARY
+                            IPRO-GILIGEDE</span>
+                        <span class="block text-base lg:text-lg text-gray-500"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div id="rdtr-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-penanaman-submenu-from-rdtr" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">RDTR (Rencana Detail Tata Ruang)</h2>
+                <button id="home-button-from-rdtr" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen RDTR</h3>
+            <div class="space-y-4" id="rdtr-file-list">
+                <a href="#" class="file-list-item" data-url="images/RDTR.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Rencana Detail Tata
+                            Ruang</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.234 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div id="lkpm-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-penanaman-submenu-from-lkpm" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">LKPM (Laporan Kegiatan Penanaman Modal)</h2>
+                <button id="home-button-from-lkpm" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen LKPM</h3>
+            <div class="space-y-4" id="lkpm-file-list">
+                <a href="#" class="file-list-item" data-url="images/LKPM.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-teal-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Laporan Kegiatan Penanaman
+                            Modal</span>
+                        <span class="block text-base lg:text-lg text-gray-500">890 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Perizinan Submenu -->
+        <div id="perizinan-submenu" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-main-menu-from-perizinan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Perizinan</h2>
+                <button id="home-button-from-perizinan" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-8">
+                <div id="spm-icon" class="menu-item-container bg-red-500 text-white hover:bg-red-600">
+                    <i data-lucide="clipboard"></i>
+                    <span class="text-lg lg:text-2xl font-semibold">SP dan SOP</span>
+                </div>
+                <div id="jenis-pelayanan-icon" class="menu-item-container bg-cyan-500 text-white hover:bg-cyan-600">
+                    <i data-lucide="folder-open"></i>
+                    <span class="text-lg lg:text-2xl font-semibold text-center">Jenis Pelayanan / Layanan Sektor</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perizinan Content Screens -->
+        <div id="spm-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-perizinan-submenu-from-spm" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">SPM (Standar Pelayanan Minimal)</h2>
+                <button id="home-button-from-spm" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4" id="spm-file-list">
+                <a href="#" class="file-list-item" data-url="images/dikes.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP dan SOP dikes</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.378 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bapenda.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">2.SP DAN SOP BAPENDA</span>
+                        <span class="block text-base lg:text-lg text-gray-500">627 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perkim.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">12.SP DAN SOP PERKIM</span>
+                        <span class="block text-base lg:text-lg text-gray-500">125 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/dislutkan.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">7.SP DAN SOP DISLUTKAN</span>
+                        <span class="block text-base lg:text-lg text-gray-500">218 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kominpo.pdf">
+                    <i data-lucide="file-text" class="file-list-item-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">5.SP DAN SOP DISKOMINFOTIK</span>
+                        <span class="block text-base lg:text-lg text-gray-500">475 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/disnaker.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">8.SP DAN SOP DISNAKER</span>
+                        <span class="block text-base lg:text-lg text-gray-500">486 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/diskop.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">6.SP DAN SOP DISKOP</span>
+                        <span class="block text-base lg:text-lg text-gray-500">767 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pangan.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">10.SP DAN SOP KETAHANAN PANGAN</span>
+                        <span class="block text-base lg:text-lg text-gray-500">267 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/dishub.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">4.SP DAN SOP DISHUB</span>
+                        <span class="block text-base lg:text-lg text-gray-500">30 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/disperindag.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">9.SP DAN SOP DISPERINDAG</span>
+                        <span class="block text-base lg:text-lg text-gray-500">141 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">13.SP DAN SOP PERTANIAN</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.161 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lh.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">3.SP DAN SOP LH</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.579 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/putr.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">11.SP DAN SOP PUTR</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.037 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perizinan.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">14.SP DAN SOP PERIZINAN</span>
+                        <span class="block text-base lg:text-lg text-gray-500">779 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div id="jenis-pelayanan-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-perizinan-submenu-from-jenis" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Jenis Pelayanan / Layanan Sektor</h2>
+                <button id="home-button-from-jenis" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                <!-- Sektor Industri Dan Perdagangan -->
+                <div class="service-box-item" onclick="navigateToSector('industri-sector-content')">
+                    <i data-lucide="factory"></i>
+                    <h3>Sektor Industri Dan Perdagangan</h3>
+                </div>
+
+                <!-- Sektor Kesehatan -->
+                <div class="service-box-item" onclick="navigateToSector('kesehatan-sector-content')">
+                    <i data-lucide="heart-pulse"></i>
+                    <h3>Sektor Kesehatan</h3>
+                </div>
+
+                <!-- Sektor Lingkungan -->
+                <div class="service-box-item" onclick="navigateToSector('lingkungan-sector-content')">
+                    <i data-lucide="leaf"></i>
+                    <h3>Sektor Lingkungan</h3>
+                </div>
+
+                <!-- Sektor PUTR -->
+                <div class="service-box-item" onclick="navigateToSector('putr-sector-content')">
+                    <i data-lucide="construction"></i>
+                    <h3>Sektor PUTR</h3>
+                </div>
+
+                <!-- Sektor Perhubungan -->
+                <div class="service-box-item" onclick="navigateToSector('perhubungan-sector-content')">
+                    <i data-lucide="bus"></i>
+                    <h3>Sektor Perhubungan</h3>
+                </div>
+
+                <!-- Sektor Pariwisata -->
+                <div class="service-box-item" onclick="navigateToSector('pariwisata-sector-content')">
+                    <i data-lucide="map-pin"></i>
+                    <h3>Sektor Pariwisata</h3>
+                </div>
+
+                <!-- Sektor Koperasi -->
+                <div class="service-box-item" onclick="navigateToSector('koperasi-sector-content')">
+                    <i data-lucide="handshake"></i>
+                    <h3>Sektor Koperasi</h3>
+                </div>
+
+                <!-- Sektor Tenaga Kerja -->
+                <div class="service-box-item" onclick="navigateToSector('tenaga-kerja-sector-content')">
+                    <i data-lucide="hard-hat"></i>
+                    <h3>Sektor Tenaga Kerja</h3>
+                </div>
+
+                <!-- Sektor Kelautan dan Perikanan -->
+                <div class="service-box-item" onclick="navigateToSector('kelautan-sector-content')">
+                    <i data-lucide="fish"></i>
+                    <h3>Sektor Kelautan dan Perikanan</h3>
+                </div>
+
+                <!-- Sektor Pertanian dan Pangan -->
+                <div class="service-box-item" onclick="navigateToSector('pertanian-sector-content')">
+                    <i data-lucide="wheat"></i>
+                    <h3>Sektor Pertanian dan Pangan</h3>
+                </div>
+
+                <!-- Sektor Pendidikan dan Kebudayaan -->
+                <div class="service-box-item" onclick="navigateToSector('pendidikan-sector-content')">
+                    <i data-lucide="book-open"></i>
+                    <h3>Sektor Pendidikan dan Kebudayaan</h3>
+                </div>
+
+                <!-- Sektor BPJS Ketenagakerjaan -->
+                <div class="service-box-item" onclick="navigateToSector('bpjs-ketenagakerjaan-sector-content')">
+                    <i data-lucide="award"></i>
+                    <h3>Sektor BPJS Ketenagakerjaan</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SECTOR CONTENT SCREENS -->
+        <!-- Sektor Industri Dan Perdagangan Content -->
+        <div id="industri-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-industri" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Industri Dan Perdagangan</h2>
+                <button id="home-button-from-industri-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/industri.png" alt="Sektor Industri" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <!-- Removed introductory paragraph -->
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="industri-file-list">
+                <a href="#" class="file-list-item" data-url="images/industri-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 1</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/industri-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 2</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/industri-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 3</span>
+                        <span class="block text-base lg:text-lg text-gray-500">900 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/industri-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 4</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/industri-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 5</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.750 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/industri-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 6</span>
+                        <span class="block text-base lg:text-lg text-gray-500">3.000 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Kesehatan Content -->
+        <div id="kesehatan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-kesehatan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Kesehatan</h2>
+                <button id="home-button-from-kesehatan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/kesehatan.png" alt="Sektor Kesehatan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="kesehatan-file-list">
+                <a href="#" class="file-list-item" data-url="images/kesehatan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Pedoman Perizinan Apotik</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kesehatan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Perizinan Rumah Sakit</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kesehatan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Toko Obat</span>
+                        <span class="block text-base lg:text-lg text-gray-500">600 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kesehatan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Perizinan Puskesmas</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kesehatan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Laik Higienis Makanan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kesehatan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi SPPIRT</span>
+                        <span class="block text-base lg:text-lg text-gray-500">750 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Lingkungan Content -->
+        <div id="lingkungan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-lingkungan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Lingkungan</h2>
+                <button id="home-button-from-lingkungan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/lingkungan.png" alt="Sektor Lingkungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="lingkungan-file-list">
+                <a href="#" class="file-list-item" data-url="images/lingkungan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 1</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lingkungan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 2</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.150 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lingkungan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 3</span>
+                        <span class="block text-base lg:text-lg text-gray-500">980 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lingkungan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 4</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lingkungan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 5</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lingkungan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 6</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor PUTR Content -->
+        <div id="putr-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-putr" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor PUTR</h2>
+                <button id="home-button-from-putr-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+
+            <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen PUTR</h3>
+            <div class="space-y-4" id="putr-file-list">
+                <a href="#" class="file-list-item" data-url="images/from.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG ruko/toko lantai 2</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.250 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bangunan sederhana.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG bangunan sederhana</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bangunan kolektif.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG bangunan Kolektif</span>
+                        <span class="block text-base lg:text-lg text-gray-500">890 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/permohonan gudang.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG gudang </span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/lantai 1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG toko lantai 1</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bangunak eksiting.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan SLF bangunan eksisting</span>
+                        <span class="block text-base lg:text-lg text-gray-500">3.400 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Perhubungan Content -->
+        <div id="perhubungan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-perhubungan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Perhubungan</h2>
+                <button id="home-button-from-perhubungan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/perhubungan.png" alt="Sektor Perhubungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="perhubungan-file-list">
+                <a href="#" class="file-list-item" data-url="images/perhubungan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Angkutan Darat</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.150 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perhubungan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Terminal dan Parkir</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.900 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perhubungan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengajuan Izin Angkutan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perhubungan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Uji Kelayakan Kendaraan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.300 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perhubungan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Keselamatan Transportasi</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.600 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/perhubungan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Informasi Tarif Angkutan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">720 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Pariwisata Content -->
+        <div id="pariwisata-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-pariwisata" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Pariwisata</h2>
+                <button id="home-button-from-pariwisata-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/pariwisata.png" alt="Sektor Pariwisata" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="pariwisata-file-list">
+                <a href="#" class="file-list-item" data-url="images/pariwisata-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Usaha Hotel</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pariwisata-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Perizinan Restoran</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pariwisata-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Usaha Perjalanan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pariwisata-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Perizinan Objek Wisata</span>
+                        <span class="block text-base lg:text-lg text-gray-500">3.200 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pariwisata-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Perizinan Spa dan Pijat</span>
+                        <span class="block text-base lg:text-lg text-gray-500">850 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pariwisata-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Usaha Kuliner</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Koperasi Content -->
+        <div id="koperasi-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-koperasi" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Koperasi</h2>
+                <button id="home-button-from-koperasi-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/koperasi.png" alt="Sektor Koperasi" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="koperasi-file-list">
+                <a href="#" class="file-list-item" data-url="images/koperasi-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Pembentukan Koperasi</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/koperasi-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Persyaratan Izin Koperasi</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/koperasi-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Standar UMKM</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/koperasi-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengelolaan Koperasi</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/koperasi-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Perizinan Bisnis Mikro</span>
+                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/koperasi-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Standar Koperasi</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Tenaga Kerja Content -->
+        <div id="tenaga-kerja-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-tenaga-kerja" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Tenaga Kerja</h2>
+                <button id="home-button-from-tenaga-kerja-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="images/tenaga.png" alt="Sektor Tenaga Kerja" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="tenaga-kerja-file-list">
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Lembaga Pelatihan Kerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Balai Latihan Kerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Keselamatan dan Kesehatan Kerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengawasan Ketenagakerjaan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Hak dan Kewajiban Pekerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perjanjian Kerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Kelautan dan Perikanan Content -->
+        <div id="kelautan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-kelautan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Kelautan dan Perikanan</h2>
+                <button id="home-button-from-kelautan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="https://placehold.co/600x400/0ea5e9/ffffff?text=Sektor+Kelautan" alt="Sektor Kelautan dan Perikanan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="kelautan-file-list">
+                <a href="#" class="file-list-item" data-url="images/kelautan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Izin Usaha Penangkapan Ikan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kelautan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Perizinan Budidaya Laut</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kelautan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Perikanan Tangkap</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kelautan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Pemanfaatan Sumber Daya Perikanan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.300 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kelautan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Ekspor Hasil Perikanan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/kelautan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Pemasaran Produk Kelautan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">900 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Pertanian dan Pangan Content -->
+        <div id="pertanian-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-pertanian" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Pertanian dan Pangan</h2>
+                <button id="home-button-from-pertanian-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="https://placehold.co/600x400/84cc16/ffffff?text=Sektor+Pertanian" alt="Sektor Pertanian dan Pangan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="pertanian-file-list">
+                <a href="#" class="file-list-item" data-url="images/pertanian-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Perizinan Usaha Tani</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Registrasi PSAT PDUK</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Produksi Pangan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Perizinan Rumah Potong Hewan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Klinik Hewan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">700 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pertanian-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Tata Kelola Lahan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor Pendidikan dan Kebudayaan Content -->
+        <div id="pendidikan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-pendidikan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Pendidikan dan Kebudayaan</h2>
+                <button id="home-button-from-pendidikan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="https://placehold.co/600x400/6366f1/ffffff?text=Sektor+Pendidikan" alt="Sektor Pendidikan dan Kebudayaan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="pendidikan-file-list">
+                <a href="#" class="file-list-item" data-url="images/pendidikan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Pendirian Sekolah</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pendidikan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Izin Kursus dan Pelatihan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pendidikan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Perizinan Pendidikan Non-formal</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pendidikan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Lembaga Kebudayaan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pendidikan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Akreditasi Lembaga Pendidikan</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/pendidikan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Kurikulum Standar</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sektor BPJS Ketenagakerjaan Content -->
+        <div id="bpjs-ketenagakerjaan-sector-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-jenis-pelayanan-from-bpjs-ketenagakerjaan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor BPJS Ketenagakerjaan</h2>
+                <button id="home-button-from-bpjs-ketenagakerjaan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <img src="https://placehold.co/600x400/FFD700/000000?text=BPJS+Ketenagakerjaan" alt="Sektor BPJS Ketenagakerjaan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <p class="text-gray-700 text-base lg:text-lg mb-4 text-left">Sektor BPJS Ketenagakerjaan menyediakan layanan jaminan sosial bagi pekerja, meliputi jaminan kecelakaan kerja, kematian, hari tua, dan pensiun.</p>
+            <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
+            <div class="space-y-4" id="bpjs-ketenagakerjaan-file-list">
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-1.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Pendaftaran Peserta BPJS</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-2.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Formulir Klaim Jaminan Kecelakaan Kerja</span>
+                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-3.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Persyaratan Klaim Jaminan Kematian</span>
+                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-4.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengambilan Jaminan Hari Tua</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-5.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Pencairan Jaminan Pensiun</span>
+                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
+                    </div>
+                </a>
+                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-6.pdf">
+                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
+                    <div class="flex-grow">
+                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Perubahan Data Peserta</span>
+                        <span class="block text-base lg:text-lg text-gray-500">700 kB</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- Mal Pelayanan Publik Submenu -->
+        <div id="mal-pelayanan-publik-submenu" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-main-menu-from-mpp" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Tata ruang</h2>
+                <button id="home-button-from-mpp-submenu" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-8">
+                <!-- Informasi Tata Ruang added here -->
+                <div id="informasi-tata-ruang-icon" class="menu-item-container bg-green-500 text-white hover:bg-green-600">
+                    <a href="https://gistaru.atrbpn.go.id/rdtrinteraktif/" target="_blank" class="w-full h-full flex flex-col items-center justify-center text-center">
+                        <i data-lucide="map-pin"></i>
+                        <span class="text-lg lg:text-2xl font-semibold">Informasi Tata Ruang</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MPP Content Screens -->
+        <div id="stand-pelayanan-content" class="app-container-card hidden mt-8 lg:mt-12">
+            <div class="flex items-center mb-6 lg:mb-10">
+                <button id="back-to-mpp-submenu-from-stand" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
+                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
+                </button>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Stand Pelayanan</h2>
+                <button id="home-button-from-stand" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                </button>
+            </div>
+            <div class="bg-blue-50 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-4">Stand Pelayanan</h3>
+                <p class="text-gray-700 mb-4">Video ini menampilkan informasi tentang stand pelayanan.</p>
+                <div class="relative w-full overflow-hidden rounded-lg shadow-md" style="padding-top: 56.25%;">
+                    <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/9d1cn5yVsJI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Viewer Container -->
+        <div id="pdf-viewer-container" class="hidden fixed inset-0 z-50 p-4 lg:p-10 flex items-center justify-center bg-gray-800 bg-opacity-95">
+            <div class="app-container-card w-full h-full max-w-7xl max-h-[95vh] overflow-hidden">
+                <div class="flex items-center justify-between mb-4 lg:mb-6">
+                    <button id="close-pdf-viewer" class="p-2 lg:p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300">
+                        <i data-lucide="x" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                    </button>
+                    <span id="pdf-title" class="text-xl lg:text-3xl font-bold text-gray-800"></span>
+                    <button id="download-pdf-button" class="p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
+                        <i data-lucide="download" class="w-6 h-6 lg:w-10 lg:h-10"></i>
+                    </button>
+                </div>
+                <div id="pdf-viewer-content" class="w-full h-[calc(100%-80px)] overflow-y-auto">
+                    <!-- PDF canvas will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal untuk menampilkan deskripsi layanan (pengganti alert) -->
+        <div id="service-modal-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-90 p-4">
+            <div class="bg-white rounded-2xl p-6 lg:p-10 max-w-lg w-full m-4 shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="service-modal-title" class="text-2xl lg:text-3xl font-bold text-gray-800"></h3>
+                    <button id="close-service-modal" class="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
+                        <i data-lucide="x" class="w-6 h-6 text-gray-600"></i>
+                    </button>
+                </div>
+                <p id="service-modal-description" class="text-gray-700 text-base lg:text-lg"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Function to navigate to a specific sector content page
+        function navigateToSector(sectorId) {
+            navigateTo(sectorId);
+        }
+
+        // Get references to DOM elements
+        const loginScreen = document.getElementById('login-screen');
+        const mainAppContainer = document.getElementById('main-app-container');
+        const loginIcon = document.getElementById('login-icon');
+        const mainMenu = document.getElementById('main-menu');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const pdfViewerContainer = document.getElementById('pdf-viewer-container');
+        const pdfViewerContent = document.getElementById('pdf-viewer-content');
+        const pdfTitle = document.getElementById('pdf-title');
+        const closePdfViewer = document.getElementById('close-pdf-viewer');
+        const downloadPdfButton = document.getElementById('download-pdf-button');
+        const homeButtons = document.querySelectorAll('[id^="home-button"]');
+        const mainTitle = document.getElementById('main-title'); // Get main title element
+        const standPelayananContent = document.getElementById('stand-pelayanan-content');
+        const standPelayananIcon = document.getElementById('stand-pelayanan-icon');
+        // Mendapatkan elemen iframe di dalam standPelayananContent, jika ada
+        const standPelayananVideoPlayer = standPelayananContent ? standPelayananContent.querySelector('iframe') : null;
+        // Referensi ini akan aman, bahkan jika elemen tidak ada
+        const closeStandPelayananVideo = document.getElementById('close-stand-pelayanan-video');
+
+
+        // Initialize PDF.js worker
+        const pdfjsLib = window.pdfjsLib;
+        if (pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
+        } else {
+            console.error('PDF.js library failed to load.');
+            const message = document.createElement('div');
+            message.classList.add('fixed', 'inset-0', 'bg-gray-800', 'bg-opacity-75', 'flex', 'items-center', 'justify-center', 'z-50');
+            message.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                    <p class="text-lg font-semibold text-red-600 mb-4">Pustaka PDF.js gagal dimuat. Harap periksa koneksi internet Anda.</p>
+                    <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Tutup</button>
+                </div>
+            `;
+            document.body.appendChild(message);
+        }
+
+        let currentPdfUrl = ''; // Variable to store the URL of the currently viewed PDF
+
+        // Define menu states for navigation
+        const menuStates = {
+            'main-menu': {
+                element: mainMenu,
+                backButton: null
+            },
+            'profil-submenu': {
+                element: document.getElementById('profil-submenu'),
+                backButton: document.getElementById('back-to-main-menu-from-profil')
+            },
+            'tentang-content': {
+                element: document.getElementById('tentang-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-tentang')
+            },
+            'profil-dpmptsp-content': {
+                element: document.getElementById('profil-dpmptsp-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-dpmptsp')
+            },
+            'visi-misi-content': {
+                element: document.getElementById('visi-misi-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-visi-misi')
+            },
+            'tugas-fungsi-content': {
+                element: document.getElementById('tugas-fungsi-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-tugas-fungsi')
+            },
+            'struktur-organisasi-content': {
+                element: document.getElementById('struktur-organisasi-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-struktur-organisasi')
+            },
+            'profil-pejabat-content': {
+                element: document.getElementById('profil-pejabat-content'),
+                backButton: document.getElementById('back-to-profil-submenu-from-pejabat')
+            },
+            'penanaman-modal-submenu': {
+                element: document.getElementById('penanaman-modal-submenu'),
+                backButton: document.getElementById('back-to-main-menu-from-penanaman')
+            },
+            'ipro-content': {
+                element: document.getElementById('ipro-content'),
+                backButton: document.getElementById('back-to-penanaman-submenu-from-ipro')
+            },
+            'rdtr-content': {
+                element: document.getElementById('rdtr-content'),
+                backButton: document.getElementById('back-to-penanaman-submenu-from-rdtr')
+            },
+            'lkpm-content': {
+                element: document.getElementById('lkpm-content'),
+                backButton: document.getElementById('back-to-penanaman-submenu-from-lkpm')
+            },
+            'perizinan-submenu': {
+                element: document.getElementById('perizinan-submenu'),
+                backButton: document.getElementById('back-to-main-menu-from-perizinan')
+            },
+            'spm-content': {
+                element: document.getElementById('spm-content'),
+                backButton: document.getElementById('back-to-perizinan-submenu-from-spm')
+            },
+            'jenis-pelayanan-content': {
+                element: document.getElementById('jenis-pelayanan-content'),
+                backButton: document.getElementById('back-to-perizinan-submenu-from-jenis')
+            },
+            'mal-pelayanan-publik-submenu': {
+                element: document.getElementById('mal-pelayanan-publik-submenu'),
+                backButton: document.getElementById('back-to-main-menu-from-mpp')
+            },
+            'stand-pelayanan-content': {
+                element: document.getElementById('stand-pelayanan-content'),
+                backButton: document.getElementById('back-to-mpp-submenu-from-stand')
+            },
+            // New sector content screens
+            'industri-sector-content': {
+                element: document.getElementById('industri-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-industri')
+            },
+            'kesehatan-sector-content': {
+                element: document.getElementById('kesehatan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-kesehatan')
+            },
+            'lingkungan-sector-content': {
+                element: document.getElementById('lingkungan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-lingkungan')
+            },
+            'putr-sector-content': {
+                element: document.getElementById('putr-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-putr')
+            },
+            'perhubungan-sector-content': {
+                element: document.getElementById('perhubungan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-perhubungan')
+            },
+            'pariwisata-sector-content': {
+                element: document.getElementById('pariwisata-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-pariwisata')
+            },
+            'koperasi-sector-content': {
+                element: document.getElementById('koperasi-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-koperasi')
+            },
+            'tenaga-kerja-sector-content': {
+                element: document.getElementById('tenaga-kerja-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-tenaga-kerja')
+            },
+            'kelautan-sector-content': {
+                element: document.getElementById('kelautan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-kelautan')
+            },
+            'pertanian-sector-content': {
+                element: document.getElementById('pertanian-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-pertanian')
+            },
+            'pendidikan-sector-content': {
+                element: document.getElementById('pendidikan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-pendidikan')
+            },
+            'bpjs-ketenagakerjaan-sector-content': {
+                element: document.getElementById('bpjs-ketenagakerjaan-sector-content'),
+                backButton: document.getElementById('back-to-jenis-pelayanan-from-bpjs-ketenagakerjaan')
+            },
+        };
+
+        let menuStack = ['main-menu']; // Stack to keep track of navigation history
+
+        // Function to show a specific screen and hide others
+        function showScreen(screenId) {
+            Object.values(menuStates).forEach(state => {
+                if (state.element) {
+                    state.element.classList.add('hidden');
+                }
+            });
+            const screenToShow = document.getElementById(screenId);
+            if (screenToShow) {
+                screenToShow.classList.remove('hidden');
+            }
+        }
+
+        // Function to navigate to a new screen, adding it to the stack
+        function navigateTo(targetScreenId) {
+            if (menuStack[menuStack.length - 1] !== targetScreenId) {
+                menuStack.push(targetScreenId);
+            }
+            showScreen(targetScreenId);
+        }
+
+        // Function to go back to the previous screen in the stack
+        function goBack() {
+            if (menuStack.length > 1) {
+                menuStack.pop();
+                const previousScreenId = menuStack[menuStack.length - 1];
+                showScreen(previousScreenId);
+            }
+        }
+
+        // Fungsi untuk menampilkan modal informasi layanan
+        function showServiceModal(title, description) {
+            const serviceModalOverlay = document.getElementById('service-modal-overlay');
+            const serviceModalTitle = document.getElementById('service-modal-title');
+            const serviceModalDescription = document.getElementById('service-modal-description');
+
+            serviceModalTitle.textContent = title;
+            serviceModalDescription.textContent = description;
+            serviceModalOverlay.classList.remove('hidden');
+        }
+
+        // Fungsi untuk menyembunyikan modal informasi layanan
+        function hideServiceModal() {
+            const serviceModalOverlay = document.getElementById('service-modal-overlay');
+            serviceModalOverlay.classList.add('hidden');
+        }
+
+        // Function to render PDF using PDF.js
+        async function renderPdf(url) {
+            loadingOverlay.classList.remove('hidden');
+            currentPdfUrl = url;
+            pdfViewerContent.innerHTML = ''; // Clear previous PDF content
+
+            if (!pdfjsLib) {
+                console.error("PDF.js library is not loaded.");
+                loadingOverlay.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const pdf = await pdfjsLib.getDocument(url).promise;
+                pdfViewerContainer.classList.remove('hidden');
+                let fileName = url.substring(url.lastIndexOf('/') + 1);
+                try {
+                    pdfTitle.textContent = decodeURIComponent(fileName); // Decode URI for display
+                } catch (e) {
+                    pdfTitle.textContent = fileName; // Fallback if decoding fails
+                }
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({
+                        scale: 2.0
+                    }); // Render at 2x scale for better quality
+
+                    const canvas = document.createElement('canvas');
+                    canvas.classList.add('pdf-page-canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    canvas.style.width = '100%'; // Make canvas responsive
+                    canvas.style.height = 'auto';
+
+                    pdfViewerContent.appendChild(canvas);
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    await page.render(renderContext).promise;
+                }
+                loadingOverlay.classList.add('hidden'); // Hide loading overlay when done
+            } catch (error) {
+                console.error("Failed to load PDF: " + error);
+                loadingOverlay.classList.add('hidden');
+                // Display an error message to the user
+                const message = document.createElement('div');
+                message.classList.add('fixed', 'inset-0', 'bg-gray-800', 'bg-opacity-75', 'flex', 'items-center', 'justify-center', 'z-50');
+                message.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                    <p class="text-lg font-semibold text-red-600 mb-4">Pustaka PDF.js gagal dimuat. Silakan coba lagi.</p>
+                    <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Tutup</button>
+                </div>
+                `;
+                document.body.appendChild(message);
+            }
+        }
+
+        // Event listener for login button
+        loginIcon.addEventListener('click', () => {
+            loginScreen.classList.add('hidden');
+            mainAppContainer.classList.remove('hidden');
+            navigateTo('main-menu');
+        });
+
+        // Event listener for the main title to go back to login screen
+        mainTitle.addEventListener('click', () => {
+            mainAppContainer.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            menuStack = ['main-menu']; // Reset menu stack
+        });
+
+        // Event listener to close PDF viewer
+        closePdfViewer.addEventListener('click', () => {
+            pdfViewerContainer.classList.add('hidden');
+            pdfViewerContent.innerHTML = ''; // Clear PDF content
+        });
+
+        // Event listener for download PDF button
+        downloadPdfButton.addEventListener('click', () => {
+            if (currentPdfUrl) {
+                const link = document.createElement('a');
+                link.href = currentPdfUrl;
+                link.download = pdfTitle.textContent; // Use PDF title as download filename
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+
+        // Event listeners for home buttons
+        homeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                menuStack = ['main-menu']; // Reset stack to main menu
+                showScreen('main-menu');
+            });
+        });
+
+        // Attach goBack function to all back buttons
+        Object.values(menuStates).forEach(state => {
+            if (state.backButton) {
+                state.backButton.addEventListener('click', goBack);
+            }
+        });
+
+        // Event listeners for main menu icons
+        document.getElementById('profil-icon').addEventListener('click', () => navigateTo('profil-submenu'));
+        document.getElementById('penanaman-modal-icon').addEventListener('click', () => navigateTo('penanaman-modal-submenu'));
+        document.getElementById('perizinan-icon').addEventListener('click', () => navigateTo('perizinan-submenu'));
+        document.getElementById('mal-pelayanan-publik-icon').addEventListener('click', () => navigateTo('mal-pelayanan-publik-submenu'));
+
+        // Event listeners for Profil submenu icons
+        document.getElementById('tentang-icon').addEventListener('click', () => navigateTo('tentang-content'));
+        document.getElementById('profil-dpmptsp-icon').addEventListener('click', () => navigateTo('profil-dpmptsp-content'));
+        document.getElementById('visi-misi-icon').addEventListener('click', () => navigateTo('visi-misi-content'));
+        document.getElementById('tugas-fungsi-icon').addEventListener('click', () => navigateTo('tugas-fungsi-content'));
+        document.getElementById('struktur-organisasi-icon').addEventListener('click', () => navigateTo('struktur-organisasi-content'));
+        document.getElementById('profil-pejabat-icon').addEventListener('click', () => navigateTo('profil-pejabat-content'));
+        // Updated event listener for Stand Pelayanan icon
+        if (document.getElementById('stand-pelayanan-icon')) {
+            document.getElementById('stand-pelayanan-icon').addEventListener('click', () => {
+                navigateTo('stand-pelayanan-content');
+            });
+        }
+
+        // Event listeners for Penanaman Modal submenu icons
+        document.getElementById('ipro-icon').addEventListener('click', () => navigateTo('ipro-content'));
+        document.getElementById('rdtr-icon').addEventListener('click', () => navigateTo('rdtr-content'));
+        document.getElementById('lkpm-icon').addEventListener('click', () => navigateTo('lkpm-content'));
+
+        // Event listeners for Perizinan submenu icons
+        document.getElementById('spm-icon').addEventListener('click', () => navigateTo('spm-content'));
+        document.getElementById('jenis-pelayanan-icon').addEventListener('click', () => navigateTo('jenis-pelayanan-content'));
+
+        // Event listeners for file list items (PDFs)
+        document.querySelectorAll('[id$="-file-list"]').forEach(list => {
+            list.addEventListener('click', (event) => {
+                const target = event.target.closest('a');
+                if (target && target.dataset.url) {
+                    event.preventDefault(); // Prevent default link behavior
+                    renderPdf(target.dataset.url); // Render PDF
+                }
+            });
+        });
+
+        // Event listeners for image-based menu items in the main menu
+        const imageMenuItems = document.querySelectorAll('#main-menu .menu-item-container a');
+        imageMenuItems.forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default link behavior
+                const parentId = item.closest('.menu-item-container').id;
+                if (parentId === 'profil-icon') {
+                    navigateTo('profil-submenu');
+                } else if (parentId === 'penanaman-modal-icon') {
+                    navigateTo('penanaman-modal-submenu');
+                } else if (parentId === 'perizinan-icon') {
+                    navigateTo('perizinan-submenu');
+                } else if (parentId === 'mal-pelayanan-publik-icon') {
+                    navigateTo('mal-pelayanan-publik-submenu');
+                }
+            });
+        });
+
+        // Event listener untuk menutup modal layanan
+        const closeServiceModalButton = document.getElementById('close-service-modal');
+        const serviceModalOverlay = document.getElementById('service-modal-overlay');
+        const serviceModalTitle = document.getElementById('service-modal-title');
+        const serviceModalDescription = document.getElementById('service-modal-description');
+
+        if (closeServiceModalButton) {
+            closeServiceModalButton.addEventListener('click', () => {
+                if (serviceModalOverlay) {
+                    serviceModalOverlay.classList.add('hidden');
+                }
+            });
+        }
+
+        if (serviceModalOverlay) {
+            serviceModalOverlay.addEventListener('click', (event) => {
+                if (event.target === serviceModalOverlay) {
+                    serviceModalOverlay.classList.add('hidden');
+                }
+            });
+        }
+
+        // Fungsi untuk menampilkan modal informasi layanan
+        function showServiceModal(title, description) {
+            if (serviceModalTitle && serviceModalDescription && serviceModalOverlay) {
+                serviceModalTitle.textContent = title;
+                serviceModalDescription.textContent = description;
+                serviceModalOverlay.classList.remove('hidden');
+            }
+        }
+        // Fungsi untuk menyembunyikan modal informasi layanan
+        function hideServiceModal() {
+            if (serviceModalOverlay) {
+                serviceModalOverlay.classList.add('hidden');
+            }
+        }
+
+        // Event listener untuk item layanan di halaman sektor
+        document.querySelectorAll('.service-info').forEach(item => {
+            item.addEventListener('click', () => {
+                const title = item.dataset.title;
+                const description = item.dataset.description;
+                showServiceModal(title, description);
+            });
+        });
+
+        // Logika untuk navigasi dari menu sektor
+        const sectorMenuItems = document.querySelectorAll('.service-box-item[data-sector]');
+        sectorMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const sectorId = item.dataset.sector;
+                navigateTo(sectorId + '-sector-content');
+            });
+        });
+    </script>
+</body>
+
+</html>
