@@ -70,37 +70,48 @@
             fill: none;
             line-height: 1;
         }
+        /* Mengatur ulang gaya untuk item daftar file agar menggunakan format kartu yang rapi */
         
-        .file-list-item,
-        .service-list-item {
+        .file-list-item-card {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
             padding: 1.5rem;
-            margin-bottom: 1rem;
             background-color: #f3f4f6;
             border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out, background-color 0.3s ease;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-align: center;
+            height: 100%;
         }
         
-        .file-list-item:hover,
-        .service-list-item:hover {
+        .file-list-item-card:hover {
+            transform: translateY(-5px);
             background-color: #e5e7eb;
         }
         
-        .file-list-item-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            margin-right: 1.5rem;
+        .file-list-item-card .lucide {
+            width: 3rem;
+            height: 3rem;
+            margin-bottom: 1rem;
+            stroke-width: 1.5;
+            color: #ef4444;
+            /* Menggunakan warna merah sesuai tema */
         }
         
-        @media (min-width: 1024px) {
-            .file-list-item-icon {
-                width: 3.5rem;
-                height: 3.5rem;
-                margin-right: 2rem;
-            }
+        .file-list-item-card h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .file-list-item-card p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0;
         }
         
         .loading-spinner {
@@ -369,7 +380,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/tentang.png" alt="Gedung DPMPTSP Lombok Barat" class="large-image-content">
+                <img src="images/tentang.png" alt="Gedung DPMPTSP Lombok Barat" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -384,7 +395,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/dpmptsp (2).png" alt="Gambar Profil DPMPTSP" class="large-image-content">
+                <img src="images/dpmptsp (2).png" alt="Gambar Profil DPMPTSP" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -399,7 +410,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/visi misi.jpeg" alt="Gambar Visi dan Misi" class="large-image-content">
+                <img src="images/visi misi.jpeg" alt="Gambar Visi dan Misi" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -414,7 +425,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/tugas.jpeg" alt="Gambar Tugas dan Fungsi" class="large-image-content">
+                <img src="images/tugas.jpeg" alt="Gambar Tugas dan Fungsi" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -429,7 +440,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/struktur.png" alt="Gambar Tugas dan Fungsi" class="large-image-content">
+                <img src="images/struktur.png" alt="Gambar Tugas dan Fungsi" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -444,7 +455,7 @@
                 </button>
             </div>
             <div class="flex justify-center">
-                <img src="images/pejabat.png" alt="Gambar Profil Pejabat Struktural" class="large-image-content">
+                <img src="https://placehold.co/800x600/6b7280/ffffff?text=Profil+Pejabat" alt="Gambar Profil Pejabat Struktural" class="large-image-content" onerror="this.src='https://placehold.co/800x600/cccccc/000000?text=Gagal+Memuat'">
             </div>
         </div>
 
@@ -556,118 +567,87 @@
                 </button>
             </div>
 
-            <div class="space-y-4" id="spm-file-list">
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur dikes.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP dan SOP Dinas Kesehatan</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+            <!-- Mengubah layout menjadi grid 2-kolom pada perangkat kecil dan 3-kolom pada perangkat besar -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="spm-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur dikes.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP dan SOP Dinas Kesehatan</h4>
+                    <p class="text-gray-500">2.378 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur bapenda.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Badan Pendapatan Daerah</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur bapenda.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Badan Pendapatan Daerah</h4>
+                    <p class="text-gray-500">627 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur prkim.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Perumahan dan Kawasan Permukiman</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur prkim.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Perumahan dan Kawasan Permukiman</h4>
+                    <p class="text-gray-500">125 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur dislutkan.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Kelautan dan Perikanan</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur dislutkan.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Kelautan dan Perikanan</h4>
+                    <p class="text-gray-500">218 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur diskominfotik.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Komunikasi Informatika dan Statistik</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur diskominfotik.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Komunikasi Informatika dan Statistik</h4>
+                    <p class="text-gray-500">475 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur disnaker.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Ketenagakerja dan Transmigrasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur disnaker.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Ketenagakerja dan Transmigrasi</h4>
+                    <p class="text-gray-500">486 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur diskop.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Koperasi Usaha Mikro Kecil dan Menengah</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur diskop.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Koperasi Usaha Mikro Kecil dan Menengah</h4>
+                    <p class="text-gray-500">767 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur pangan.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP KETAHANAN PANGAN</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur pangan.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP KETAHANAN PANGAN</h4>
+                    <p class="text-gray-500">267 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur dishub.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Perhubungan</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur dishub.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Perhubungan</h4>
+                    <p class="text-gray-500">30 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur Disperindag .pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Perdagangan Provinsi</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur Disperindag .pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Perdagangan Provinsi</h4>
+                    <p class="text-gray-500">141 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur pertanian.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP PERTANIAN</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur pertanian.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP PERTANIAN</h4>
+                    <p class="text-gray-500">1.161 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SP DAN SOP alur LH.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Lingkungan Hidup</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SP DAN SOP alur LH.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Lingkungan Hidup</h4>
+                    <p class="text-gray-500">1.579 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/putr.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP Perkerjaan Umum dan Penata Ruang</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/putr.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP Perkerjaan Umum dan Penata Ruang</h4>
+                    <p class="text-gray-500">1.037 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/1.SK BUPATI NO 188.45 988 DPMPTSP TTG SP & SOP DPMPTSP 2022.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SP DAN SOP PERIZINAN</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/1.SK BUPATI NO 188.45 988 DPMPTSP TTG SP & SOP DPMPTSP 2022.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SP DAN SOP PERIZINAN</h4>
+                    <p class="text-gray-500">779 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SOP PBG.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SOP PBG</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SOP PBG.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SOP PBG</h4>
+                    <p class="text-gray-500"></p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/SOP SiCANTIK.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-red-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">SOP SiCANTIK</span>
-                        <span class="block text-base lg:text-lg text-gray-500"></span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/SOP SiCANTIK.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">SOP SiCANTIK</h4>
+                    <p class="text-gray-500"></p>
                 </a>
             </div>
         </div>
@@ -685,74 +665,74 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 <!-- Sektor Industri Dan Perdagangan -->
-                <div class="service-box-item" onclick="navigateToSector('industri-sector-content')">
-                    <i data-lucide="factory"></i>
+                <div class="service-box-item" onclick="navigateToSector('industri')">
+                    <i data-lucide="factory" class="text-blue-500"></i>
                     <h3>Sektor Industri Dan Perdagangan</h3>
                 </div>
 
                 <!-- Sektor Kesehatan -->
-                <div class="service-box-item" onclick="navigateToSector('kesehatan-sector-content')">
-                    <i data-lucide="heart-pulse"></i>
+                <div class="service-box-item" onclick="navigateToSector('kesehatan')">
+                    <i data-lucide="heart-pulse" class="text-indigo-500"></i>
                     <h3>Sektor Kesehatan</h3>
                 </div>
 
                 <!-- Sektor Lingkungan -->
-                <div class="service-box-item" onclick="navigateToSector('lingkungan-sector-content')">
-                    <i data-lucide="leaf"></i>
+                <div class="service-box-item" onclick="navigateToSector('lingkungan')">
+                    <i data-lucide="leaf" class="text-green-500"></i>
                     <h3>Sektor Lingkungan</h3>
                 </div>
 
                 <!-- Sektor PUTR -->
-                <div class="service-box-item" onclick="navigateToSector('putr-sector-content')">
-                    <i data-lucide="construction"></i>
+                <div class="service-box-item" onclick="navigateToSector('putr')">
+                    <i data-lucide="construction" class="text-orange-500"></i>
                     <h3>Sektor PUTR</h3>
                 </div>
 
                 <!-- Sektor Perhubungan -->
-                <div class="service-box-item" onclick="navigateToSector('perhubungan-sector-content')">
-                    <i data-lucide="bus"></i>
+                <div class="service-box-item" onclick="navigateToSector('perhubungan')">
+                    <i data-lucide="bus" class="text-yellow-500"></i>
                     <h3>Sektor Perhubungan</h3>
                 </div>
 
                 <!-- Sektor Pariwisata -->
-                <div class="service-box-item" onclick="navigateToSector('pariwisata-sector-content')">
-                    <i data-lucide="map-pin"></i>
+                <div class="service-box-item" onclick="navigateToSector('pariwisata')">
+                    <i data-lucide="map-pin" class="text-purple-500"></i>
                     <h3>Sektor Pariwisata</h3>
                 </div>
 
                 <!-- Sektor Koperasi -->
-                <div class="service-box-item" onclick="navigateToSector('koperasi-sector-content')">
-                    <i data-lucide="handshake"></i>
+                <div class="service-box-item" onclick="navigateToSector('koperasi')">
+                    <i data-lucide="handshake" class="text-rose-500"></i>
                     <h3>Sektor Koperasi</h3>
                 </div>
 
                 <!-- Sektor Tenaga Kerja -->
-                <div class="service-box-item" onclick="navigateToSector('tenaga-kerja-sector-content')">
-                    <i data-lucide="hard-hat"></i>
+                <div class="service-box-item" onclick="navigateToSector('tenaga-kerja')">
+                    <i data-lucide="hard-hat" class="text-slate-500"></i>
                     <h3>Sektor Tenaga Kerja</h3>
                 </div>
 
                 <!-- Sektor Kelautan dan Perikanan -->
-                <div class="service-box-item" onclick="navigateToSector('kelautan-sector-content')">
-                    <i data-lucide="fish"></i>
+                <div class="service-box-item" onclick="navigateToSector('kelautan')">
+                    <i data-lucide="fish" class="text-cyan-500"></i>
                     <h3>Sektor Kelautan dan Perikanan</h3>
                 </div>
 
                 <!-- Sektor Pertanian dan Pangan -->
-                <div class="service-box-item" onclick="navigateToSector('pertanian-sector-content')">
-                    <i data-lucide="wheat"></i>
+                <div class="service-box-item" onclick="navigateToSector('pertanian')">
+                    <i data-lucide="wheat" class="text-lime-500"></i>
                     <h3>Sektor Pertanian dan Pangan</h3>
                 </div>
 
                 <!-- Sektor Pendidikan dan Kebudayaan -->
-                <div class="service-box-item" onclick="navigateToSector('pendidikan-sector-content')">
-                    <i data-lucide="book-open"></i>
+                <div class="service-box-item" onclick="navigateToSector('pendidikan')">
+                    <i data-lucide="book-open" class="text-fuchsia-500"></i>
                     <h3>Sektor Pendidikan dan Kebudayaan</h3>
                 </div>
 
                 <!-- Sektor BPJS Ketenagakerjaan -->
-                <div class="service-box-item" onclick="navigateToSector('bpjs-ketenagakerjaan-sector-content')">
-                    <i data-lucide="award"></i>
+                <div class="service-box-item" onclick="navigateToSector('bpjs-ketenagakerjaan')">
+                    <i data-lucide="award" class="text-amber-500"></i>
                     <h3>Sektor BPJS Ketenagakerjaan</h3>
                 </div>
             </div>
@@ -770,51 +750,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/industri.png" alt="Sektor Industri" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
-            <!-- Removed introductory paragraph -->
+            <img src="https://placehold.co/600x400/3498db/ffffff?text=Sektor+Industri" alt="Sektor Industri" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="industri-file-list">
-                <a href="#" class="file-list-item" data-url="images/industri-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 1</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="industri-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/industri-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 1</h4>
+                    <p class="text-gray-500">1.200 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/industri-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 2</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/industri-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 2</h4>
+                    <p class="text-gray-500">1.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/industri-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 3</span>
-                        <span class="block text-base lg:text-lg text-gray-500">900 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/industri-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 3</h4>
+                    <p class="text-gray-500">900 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/industri-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 4</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/industri-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 4</h4>
+                    <p class="text-gray-500">2.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/industri-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 5</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.750 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/industri-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 5</h4>
+                    <p class="text-gray-500">1.750 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/industri-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 6</span>
-                        <span class="block text-base lg:text-lg text-gray-500">3.000 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/industri-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Industri dan Perdagangan 6</h4>
+                    <p class="text-gray-500">3.000 kB</p>
                 </a>
             </div>
         </div>
@@ -830,50 +797,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/kesehatan.png" alt="Sektor Kesehatan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/4CAF50/ffffff?text=Sektor+Kesehatan" alt="Sektor Kesehatan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="kesehatan-file-list">
-                <a href="#" class="file-list-item" data-url="images/kesehatan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-50"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Pedoman Perizinan Apotik</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="kesehatan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Pedoman Perizinan Apotik</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kesehatan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-50"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Perizinan Rumah Sakit</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.500 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Syarat Perizinan Rumah Sakit</h4>
+                    <p class="text-gray-500">2.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kesehatan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Toko Obat</span>
-                        <span class="block text-base lg:text-lg text-gray-500">600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Izin Toko Obat</h4>
+                    <p class="text-gray-500">600 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kesehatan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Perizinan Puskesmas</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Perizinan Puskesmas</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kesehatan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Laik Higienis Makanan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Laik Higienis Makanan</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kesehatan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi SPPIRT</span>
-                        <span class="block text-base lg:text-lg text-gray-500">750 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kesehatan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi SPPIRT</h4>
+                    <p class="text-gray-500">750 kB</p>
                 </a>
             </div>
         </div>
@@ -889,50 +844,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/lingkungan.png" alt="Sektor Lingkungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/4CAF50/ffffff?text=Sektor+Lingkungan" alt="Sektor Lingkungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="lingkungan-file-list">
-                <a href="#" class="file-list-item" data-url="images/lingkungan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 1</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="lingkungan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 1</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lingkungan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 2</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.150 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 2</h4>
+                    <p class="text-gray-500">2.150 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lingkungan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 3</span>
-                        <span class="block text-base lg:text-lg text-gray-500">980 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 3</h4>
+                    <p class="text-gray-500">980 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lingkungan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 4</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 4</h4>
+                    <p class="text-gray-500">1.400 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lingkungan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 5</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 5</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lingkungan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Lingkungan 6</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lingkungan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Lingkungan 6</h4>
+                    <p class="text-gray-500">2.700 kB</p>
                 </a>
             </div>
         </div>
@@ -950,48 +893,36 @@
             </div>
 
             <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen PUTR</h3>
-            <div class="space-y-4" id="putr-file-list">
-                <a href="#" class="file-list-item" data-url="images/from.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG ruko/toko lantai 2</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.250 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="putr-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/from.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan PBG ruko/toko lantai 2</h4>
+                    <p class="text-gray-500">1.250 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bangunan sederhana.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG bangunan sederhana</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bangunan sederhana.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan PBG bangunan sederhana</h4>
+                    <p class="text-gray-500">2.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bangunan kolektif.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG bangunan Kolektif</span>
-                        <span class="block text-base lg:text-lg text-gray-500">890 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bangunan kolektif.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan PBG bangunan Kolektif</h4>
+                    <p class="text-gray-500">890 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/permohonan gudang.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG gudang </span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/permohonan gudang.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan PBG gudang</h4>
+                    <p class="text-gray-500">1.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/lantai 1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan PBG toko lantai 1</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/lantai 1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan PBG toko lantai 1</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bangunak eksiting.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-orange-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Permohonan SLF bangunan eksisting</span>
-                        <span class="block text-base lg:text-lg text-gray-500">3.400 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bangunak eksiting.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Permohonan SLF bangunan eksisting</h4>
+                    <p class="text-gray-500">3.400 kB</p>
                 </a>
             </div>
         </div>
@@ -1007,50 +938,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/perhubungan.png" alt="Sektor Perhubungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/FFD700/000000?text=Sektor+Perhubungan" alt="Sektor Perhubungan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="perhubungan-file-list">
-                <a href="#" class="file-list-item" data-url="images/perhubungan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Angkutan Darat</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.150 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="perhubungan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Angkutan Darat</h4>
+                    <p class="text-gray-500">1.150 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/perhubungan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Terminal dan Parkir</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.900 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Izin Terminal dan Parkir</h4>
+                    <p class="text-gray-500">1.900 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/perhubungan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengajuan Izin Angkutan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Pengajuan Izin Angkutan</h4>
+                    <p class="text-gray-500">800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/perhubungan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Uji Kelayakan Kendaraan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.300 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Uji Kelayakan Kendaraan</h4>
+                    <p class="text-gray-500">1.300 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/perhubungan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Keselamatan Transportasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Standar Keselamatan Transportasi</h4>
+                    <p class="text-gray-500">2.600 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/perhubungan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-blue-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Informasi Tarif Angkutan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">720 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/perhubungan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Informasi Tarif Angkutan</h4>
+                    <p class="text-gray-500">720 kB</p>
                 </a>
             </div>
         </div>
@@ -1066,50 +985,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/pariwisata.png" alt="Sektor Pariwisata" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/9b59b6/ffffff?text=Sektor+Pariwisata" alt="Sektor Pariwisata" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="pariwisata-file-list">
-                <a href="#" class="file-list-item" data-url="images/pariwisata-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Usaha Hotel</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.500 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="pariwisata-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Usaha Hotel</h4>
+                    <p class="text-gray-500">2.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pariwisata-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Perizinan Restoran</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Standar Perizinan Restoran</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pariwisata-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Usaha Perjalanan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Izin Usaha Perjalanan</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pariwisata-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Perizinan Objek Wisata</span>
-                        <span class="block text-base lg:text-lg text-gray-500">3.200 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi Perizinan Objek Wisata</h4>
+                    <p class="text-gray-500">3.200 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pariwisata-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Perizinan Spa dan Pijat</span>
-                        <span class="block text-base lg:text-lg text-gray-500">850 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Perizinan Spa dan Pijat</h4>
+                    <p class="text-gray-500">850 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pariwisata-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-purple-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Usaha Kuliner</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pariwisata-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Usaha Kuliner</h4>
+                    <p class="text-gray-500">1.600 kB</p>
                 </a>
             </div>
         </div>
@@ -1125,50 +1032,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/koperasi.png" alt="Sektor Koperasi" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/e84988/ffffff?text=Sektor+Koperasi" alt="Sektor Koperasi" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="koperasi-file-list">
-                <a href="#" class="file-list-item" data-url="images/koperasi-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Pembentukan Koperasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="koperasi-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Pembentukan Koperasi</h4>
+                    <p class="text-gray-500">1.400 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/koperasi-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Persyaratan Izin Koperasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Persyaratan Izin Koperasi</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/koperasi-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Standar UMKM</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Standar UMKM</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/koperasi-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengelolaan Koperasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Pengelolaan Koperasi</h4>
+                    <p class="text-gray-500">2.700 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/koperasi-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Perizinan Bisnis Mikro</span>
-                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi Perizinan Bisnis Mikro</h4>
+                    <p class="text-gray-500">800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/koperasi-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-rose-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Standar Koperasi</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/koperasi-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Standar Koperasi</h4>
+                    <p class="text-gray-500">1.600 kB</p>
                 </a>
             </div>
         </div>
@@ -1184,50 +1079,38 @@
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
             </div>
-            <img src="images/tenaga.png" alt="Sektor Tenaga Kerja" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
+            <img src="https://placehold.co/600x400/94a3b8/ffffff?text=Sektor+Tenaga+Kerja" alt="Sektor Tenaga Kerja" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="tenaga-kerja-file-list">
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Lembaga Pelatihan Kerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.400 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="tenaga-kerja-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Izin Lembaga Pelatihan Kerja</h4>
+                    <p class="text-gray-500">1.400 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Balai Latihan Kerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi Balai Latihan Kerja</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Keselamatan dan Kesehatan Kerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Standar Keselamatan dan Kesehatan Kerja</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengawasan Ketenagakerjaan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.700 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Pengawasan Ketenagakerjaan</h4>
+                    <p class="text-gray-500">2.700 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Hak dan Kewajiban Pekerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Hak dan Kewajiban Pekerja</h4>
+                    <p class="text-gray-500">800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/tenaga-kerja-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-slate-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perjanjian Kerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/tenaga-kerja-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perjanjian Kerja</h4>
+                    <p class="text-gray-500">1.600 kB</p>
                 </a>
             </div>
         </div>
@@ -1245,48 +1128,36 @@
             </div>
             <img src="https://placehold.co/600x400/0ea5e9/ffffff?text=Sektor+Kelautan" alt="Sektor Kelautan dan Perikanan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="kelautan-file-list">
-                <a href="#" class="file-list-item" data-url="images/kelautan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Izin Usaha Penangkapan Ikan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="kelautan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Izin Usaha Penangkapan Ikan</h4>
+                    <p class="text-gray-500">1.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kelautan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Perizinan Budidaya Laut</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Syarat Perizinan Budidaya Laut</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kelautan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Perizinan Perikanan Tangkap</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Perizinan Perikanan Tangkap</h4>
+                    <p class="text-gray-500">1.200 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kelautan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Pemanfaatan Sumber Daya Perikanan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.300 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi Pemanfaatan Sumber Daya Perikanan</h4>
+                    <p class="text-gray-500">2.300 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kelautan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Ekspor Hasil Perikanan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Ekspor Hasil Perikanan</h4>
+                    <p class="text-gray-500">1.600 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/kelautan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-cyan-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Pemasaran Produk Kelautan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">900 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/kelautan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Pemasaran Produk Kelautan</h4>
+                    <p class="text-gray-500">900 kB</p>
                 </a>
             </div>
         </div>
@@ -1304,48 +1175,36 @@
             </div>
             <img src="https://placehold.co/600x400/84cc16/ffffff?text=Sektor+Pertanian" alt="Sektor Pertanian dan Pangan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="pertanian-file-list">
-                <a href="#" class="file-list-item" data-url="images/pertanian-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Perizinan Usaha Tani</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.600 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="pertanian-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Perizinan Usaha Tani</h4>
+                    <p class="text-gray-500">1.600 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pertanian-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Registrasi PSAT PDUK</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Registrasi PSAT PDUK</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pertanian-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Standar Produksi Pangan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Standar Produksi Pangan</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pertanian-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Perizinan Rumah Potong Hewan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Perizinan Rumah Potong Hewan</h4>
+                    <p class="text-gray-500">2.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pertanian-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Klinik Hewan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">700 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Klinik Hewan</h4>
+                    <p class="text-gray-500">700 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pertanian-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-green-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Tata Kelola Lahan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pertanian-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Tata Kelola Lahan</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
             </div>
         </div>
@@ -1363,48 +1222,36 @@
             </div>
             <img src="https://placehold.co/600x400/6366f1/ffffff?text=Sektor+Pendidikan" alt="Sektor Pendidikan dan Kebudayaan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="pendidikan-file-list">
-                <a href="#" class="file-list-item" data-url="images/pendidikan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Izin Pendirian Sekolah</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.800 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="pendidikan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Izin Pendirian Sekolah</h4>
+                    <p class="text-gray-500">1.800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pendidikan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Syarat Izin Kursus dan Pelatihan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Syarat Izin Kursus dan Pelatihan</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pendidikan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Perizinan Pendidikan Non-formal</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Perizinan Pendidikan Non-formal</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pendidikan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Regulasi Lembaga Kebudayaan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">2.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Regulasi Lembaga Kebudayaan</h4>
+                    <p class="text-gray-500">2.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pendidikan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Akreditasi Lembaga Pendidikan</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Akreditasi Lembaga Pendidikan</h4>
+                    <p class="text-gray-500">1.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/pendidikan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Kurikulum Standar</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/pendidikan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Kurikulum Standar</h4>
+                    <p class="text-gray-500">1.200 kB</p>
                 </a>
             </div>
         </div>
@@ -1423,48 +1270,36 @@
             <img src="https://placehold.co/600x400/FFD700/000000?text=BPJS+Ketenagakerjaan" alt="Sektor BPJS Ketenagakerjaan" class="w-full max-w-lg h-auto rounded-lg mb-4 mx-auto" onerror="this.src='https://placehold.co/600x400/cccccc/000000?text=Gambar+Tidak+Tersedia'">
             <p class="text-gray-700 text-base lg:text-lg mb-4 text-left">Sektor BPJS Ketenagakerjaan menyediakan layanan jaminan sosial bagi pekerja, meliputi jaminan kecelakaan kerja, kematian, hari tua, dan pensiun.</p>
             <h4 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-2 text-left">Layanan:</h4>
-            <div class="space-y-4" id="bpjs-ketenagakerjaan-file-list">
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-1.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Pendaftaran Peserta BPJS</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.200 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="bpjs-ketenagakerjaan-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-1.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Pendaftaran Peserta BPJS</h4>
+                    <p class="text-gray-500">1.200 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-2.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Formulir Klaim Jaminan Kecelakaan Kerja</span>
-                        <span class="block text-base lg:text-lg text-gray-500">800 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-2.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Formulir Klaim Jaminan Kecelakaan Kerja</h4>
+                    <p class="text-gray-500">800 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-3.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Persyaratan Klaim Jaminan Kematian</span>
-                        <span class="block text-base lg:text-lg text-gray-500">950 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-3.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Persyaratan Klaim Jaminan Kematian</h4>
+                    <p class="text-gray-500">950 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-4.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Prosedur Pengambilan Jaminan Hari Tua</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.500 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-4.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Prosedur Pengambilan Jaminan Hari Tua</h4>
+                    <p class="text-gray-500">1.500 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-5.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Pencairan Jaminan Pensiun</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.100 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-5.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Pencairan Jaminan Pensiun</h4>
+                    <p class="text-gray-500">1.100 kB</p>
                 </a>
-                <a href="#" class="file-list-item" data-url="images/bpjs-ketenagakerjaan-6.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-yellow-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Panduan Perubahan Data Peserta</span>
-                        <span class="block text-base lg:text-lg text-gray-500">700 kB</span>
-                    </div>
+                <a href="#" class="file-list-item-card" data-url="images/bpjs-ketenagakerjaan-6.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Panduan Perubahan Data Peserta</h4>
+                    <p class="text-gray-500">700 kB</p>
                 </a>
             </div>
         </div>
@@ -1509,14 +1344,12 @@
                 </button>
             </div>
             <h3 class="text-xl lg:text-3xl font-bold text-gray-700 mb-4 lg:mb-6 mt-4 lg:mt-10">Daftar Dokumen RDTR</h3>
-            <div class="space-y-4" id="rdtr-file-list">
-                <a href="#" class="file-list-item" data-url="images/RDTR.pdf">
-                    <i data-lucide="file-text" class="file-list-item-icon text-indigo-500"></i>
-                    <div class="flex-grow">
-                        <span class="block text-lg lg:text-2xl font-semibold text-gray-800">Dokumen Rencana Detail Tata
-                            Ruang</span>
-                        <span class="block text-base lg:text-lg text-gray-500">1.234 kB</span>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6" id="rdtr-file-list">
+                <a href="#" class="file-list-item-card" data-url="images/RDTR.pdf">
+                    <i data-lucide="file-text"></i>
+                    <h4 class="font-semibold text-gray-800">Dokumen Rencana Detail Tata Ruang
+                    </h4>
+                    <p class="text-gray-500">1.234 kB</p>
                 </a>
             </div>
         </div>
@@ -1572,7 +1405,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         // Initialize Lucide icons
@@ -1845,10 +1677,10 @@
                 const message = document.createElement('div');
                 message.classList.add('fixed', 'inset-0', 'bg-gray-800', 'bg-opacity-75', 'flex', 'items-center', 'justify-center', 'z-50');
                 message.innerHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-xl text-center">
-                    <p class="text-lg font-semibold text-red-600 mb-4">Pustaka PDF.js gagal dimuat. Silakan coba lagi.</p>
-                    <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Tutup</button>
-                </div>
+                    <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                        <p class="text-lg font-semibold text-red-600 mb-4">Pustaka PDF.js gagal dimuat. Silakan coba lagi.</p>
+                        <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Tutup</button>
+                    </div>
                 `;
                 document.body.appendChild(message);
             }
@@ -2006,7 +1838,7 @@
         });
 
         // Logika untuk navigasi dari menu sektor
-        const sectorMenuItems = document.querySelectorAll('.service-box-item[data-sector]');
+        const sectorMenuItems = document.querySelectorAll('.service-box-item');
         sectorMenuItems.forEach(item => {
             item.addEventListener('click', () => {
                 const sectorId = item.dataset.sector;
