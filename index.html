@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Living Mandiri dpmptsp lobar</title>
+    <title>Living Mandiri - Versi Adaptif</title>
     <!-- Memuat Tailwind CSS dari CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Memuat Lucide Icons dari CDN -->
@@ -14,8 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js"></script>
     <style>
         /* CSS yang disederhanakan untuk responsivitas yang lebih baik.
-         * Semua ukuran diatur menggunakan unit relatif seperti rem atau kelas Tailwind.
-         */
+        * Semua ukuran diatur menggunakan unit relatif seperti rem atau kelas Tailwind.
+        */
         
         body {
             font-family: 'Inter', sans-serif;
@@ -32,6 +32,7 @@
             position: relative;
             overflow-y: auto;
         }
+        /* Mengurangi opasitas overlay untuk membuat gambar latar lebih jernih */
         
         body::before {
             content: '';
@@ -41,11 +42,13 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.45);
+            /* Opasitas dikurangi menjadi 0.45 */
             z-index: -1;
         }
         
         .app-container-card {
             background-color: rgba(255, 255, 255, 0.95);
+            /* Dibuat sedikit transparan agar gambar latar masih terlihat */
             border-radius: 2rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
             padding: 2rem;
@@ -117,6 +120,7 @@
                 transform: rotate(360deg);
             }
         }
+        /* Mengubah gaya PDF viewer agar tidak lagi menjadi overlay tetap */
         
         #pdf-viewer-container {
             width: 100%;
@@ -126,6 +130,7 @@
             margin: 0;
             padding: 0;
             background-color: transparent;
+            /* agar tidak ada background ganda */
         }
         
         .pdf-viewer-canvas {
@@ -193,6 +198,7 @@
                 font-size: 2.5rem;
             }
         }
+        /* New styles for service items as boxes */
         
         .service-box-item {
             display: flex;
@@ -202,7 +208,7 @@
             padding: 1.5rem;
             border-radius: 1rem;
             background-color: #f3f4f6;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1-px rgba(0, 0, 0, 0.06);
             transition: transform 0.2s ease-in-out, background-color 0.3s ease;
             cursor: pointer;
             text-align: center;
@@ -260,7 +266,7 @@
         <h1 class="text-4xl sm:text-5xl lg:text-8xl font-extrabold text-white tracking-tighter mb-4 lg:mb-6">
             LIVING - mandiri
         </h1>
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 lg:mb-4">Layanan Informasi Investasi Perizinan Digital</h2>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 lg:mb-4">Layanan Informasi Investasi Perizinan Digital </h2>
         <p class="text-lg sm:text-xl text-gray-200 mb-6 lg:mb-10">Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu Kabupaten Lombok Barat</p>
 
         <!-- Login Button -->
@@ -342,7 +348,6 @@
                     <i data-lucide="users"></i>
                     <span class="text-lg lg:text-2xl font-semibold">Profil Pejabat Struktural</span>
                 </div>
-                <!-- Pindahkan Stand Pelayanan ke dalam menu Profil -->
                 <div id="stand-pelayanan-icon" class="menu-item-container bg-pink-500 text-white hover:bg-pink-600">
                     <i data-lucide="building"></i>
                     <span class="text-lg lg:text-2xl font-semibold">Stand Pelayanan</span>
@@ -350,7 +355,7 @@
             </div>
         </div>
 
-        <!-- Profil Content Screens -->
+        <!-- Profil Content Screens (tetap menggunakan gambar) -->
         <div id="tentang-content" class="app-container-card hidden mt-8 lg:mt-12">
             <div class="flex items-center mb-6 lg:mb-10">
                 <button id="back-to-profil-submenu-from-tentang" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
@@ -363,21 +368,6 @@
             </div>
             <div class="flex justify-center">
                 <img src="images/tentang.png" alt="Gedung DPMPTSP Lombok Barat" class="large-image-content">
-            </div>
-        </div>
-
-        <div id="profil-dpmptsp-content" class="app-container-card hidden mt-8 lg:mt-12">
-            <div class="flex items-center mb-6 lg:mb-10">
-                <button id="back-to-profil-submenu-from-dpmptsp" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
-                    <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
-                </button>
-                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Profil DPMPTSP</h2>
-                <button id="home-button-from-dpmptsp" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
-                    <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
-                </button>
-            </div>
-            <div class="flex justify-center">
-                <img src="images/dpmptsp (2).png" alt="Gambar Profil DPMPTSP" class="large-image-content">
             </div>
         </div>
 
@@ -1351,7 +1341,7 @@
                 <button id="back-to-jenis-pelayanan-from-pendidikan" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
                     <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
                 </button>
-                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Pendidikan dan Kebudayaan</h2>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Sektor Pendidikan dan Kebudayaan </h2>
                 <button id="home-button-from-pendidikan-sector" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
@@ -1471,7 +1461,7 @@
                 <button id="back-to-main-menu-from-mpp" class="p-2 lg:p-4 mr-4 lg:mr-6 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300">
                     <i data-lucide="arrow-left" class="w-6 h-6 lg:w-10 lg:h-10 text-gray-700"></i>
                 </button>
-                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">informasi Tata Ruang</h2>
+                <h2 class="text-2xl lg:text-4xl font-bold text-gray-800">Informasi Tata Ruang</h2>
                 <button id="home-button-from-mpp-submenu" class="ml-auto p-2 lg:p-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-300">
                     <i data-lucide="home" class="w-6 h-6 lg:w-10 lg:h-10"></i>
                 </button>
@@ -1632,10 +1622,6 @@
                 element: document.getElementById('tentang-content'),
                 backButton: document.getElementById('back-to-profil-submenu-from-tentang')
             },
-            'profil-dpmptsp-content': {
-                element: document.getElementById('profil-dpmptsp-content'),
-                backButton: document.getElementById('back-to-profil-submenu-from-dpmptsp')
-            },
             'visi-misi-content': {
                 element: document.getElementById('visi-misi-content'),
                 backButton: document.getElementById('back-to-profil-submenu-from-visi-misi')
@@ -1688,7 +1674,6 @@
                 element: document.getElementById('rdtr-content'),
                 backButton: document.getElementById('back-to-mpp-submenu-from-rdtr')
             },
-            // New sector content screens
             'industri-sector-content': {
                 element: document.getElementById('industri-sector-content'),
                 backButton: document.getElementById('back-to-jenis-pelayanan-from-industri')
@@ -1904,7 +1889,10 @@
 
         // Event listeners for Profil submenu icons
         document.getElementById('tentang-icon').addEventListener('click', () => navigateTo('tentang-content'));
-        document.getElementById('profil-dpmptsp-icon').addEventListener('click', () => navigateTo('profil-dpmptsp-content'));
+        // Mengubah listener untuk langsung menampilkan PDF
+        document.getElementById('profil-dpmptsp-icon').addEventListener('click', () => {
+            renderPdf('images/PROFIL DPMPTSP.pdf');
+        });
         document.getElementById('visi-misi-icon').addEventListener('click', () => navigateTo('visi-misi-content'));
         document.getElementById('tugas-fungsi-icon').addEventListener('click', () => navigateTo('tugas-fungsi-content'));
         document.getElementById('struktur-organisasi-icon').addEventListener('click', () => navigateTo('struktur-organisasi-content'));
@@ -2012,4 +2000,3 @@
 </body>
 
 </html>
-
